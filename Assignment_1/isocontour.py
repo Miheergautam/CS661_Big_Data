@@ -3,6 +3,7 @@ import vtk
 
 def generate_isocontour(volume_data, iso_value):
 
+    # dimensions of the input volume data
     dims = volume_data.GetDimensions()
     width, height = dims[0], dims[1]
 
@@ -14,6 +15,7 @@ def generate_isocontour(volume_data, iso_value):
 
     point_cache = {}
 
+    # interpolate a point between two points based on the iso_value
     def interpolate_point(x1, y1, v1, x2, y2, v2):
         ratio = (iso_value - v1) / (v2 - v1)
         return x1 + ratio * (x2 - x1), y1 + ratio * (y2 - y1)
@@ -24,6 +26,7 @@ def generate_isocontour(volume_data, iso_value):
             point_cache[key] = points.InsertNextPoint(x, y, 0.0)
         return point_cache[key]
 
+    # iterate over each cell to find intersections with the iso_value
     for i in range(width - 1):
         for j in range(height - 1):
             v0 = scalar_field.GetComponent(i + j * width, 0)
@@ -48,6 +51,7 @@ def generate_isocontour(volume_data, iso_value):
                 line.GetPointIds().SetId(1, p2)
                 lines.InsertNextCell(line)
 
+    # set the generated points and lines into VTK PolyData object
     result_data.SetPoints(points)
     result_data.SetLines(lines)
 
@@ -63,19 +67,22 @@ except ValueError:
     print("Invalid input. Please enter a numeric value.")
     exit()
 
+# Read the input volume data
 reader = vtk.vtkXMLImageDataReader()
 reader.SetFileName(input_file)
 reader.Update()
 
 volume = reader.GetOutput()
 
+# Generate the isocontour
 print(f"Generating isocontour for iso_value: {isovalue}")
 isocontour = generate_isocontour(volume, isovalue)
 
-
+# Create the output directory
 output_dir = "output_isocontours"
 os.makedirs(output_dir, exist_ok=True)
 
+# Define the output file name and save the isocontour
 output_file = os.path.join(output_dir, f"isocontour_{isovalue:.2f}.vtp")
 writer = vtk.vtkXMLPolyDataWriter()
 writer.SetFileName(output_file)
@@ -83,6 +90,7 @@ writer.SetInputData(isocontour)
 writer.Write()
 print(f"Isocontour saved as '{output_file}'")
 
+# Set up VTK pipeline for visualization
 mapper = vtk.vtkPolyDataMapper()
 mapper.SetInputData(isocontour)
 

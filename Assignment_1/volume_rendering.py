@@ -1,12 +1,14 @@
 import vtk
 
 def load_volume(file_path):
+    # Create a reader to load the VTI file
     reader = vtk.vtkXMLImageDataReader()
     reader.SetFileName(file_path)
     reader.Update()
     return reader
 
 def create_color_transfer_function():
+    # Define color mapping based on scalar values
     color_trans_fun = vtk.vtkColorTransferFunction()
     color_points = [
         (-4931.54, 0, 1, 1),
@@ -21,6 +23,7 @@ def create_color_transfer_function():
     return color_trans_fun
 
 def create_opacity_transfer_function():
+    # Define opacity mapping based on scalar values
     opacity_trans_fun = vtk.vtkPiecewiseFunction()
     opacity_points = [
         (-4931.54, 1.0),
@@ -45,6 +48,7 @@ def setup_volume_property():
     return volume_property
 
 def create_volume(reader):
+    # volume mapper and volume for rendering
     volume_mapper = vtk.vtkSmartVolumeMapper()
     volume_mapper.SetInputData(reader.GetOutput())
     volume = vtk.vtkVolume()
@@ -53,6 +57,7 @@ def create_volume(reader):
     return volume
 
 def create_outline(reader):
+    # Generate an outline around the volume
     outline = vtk.vtkOutlineFilter()
     outline.SetInputData(reader.GetOutput())
     outline_mapper = vtk.vtkPolyDataMapper()
@@ -84,5 +89,6 @@ def render_scene(file_path):
     render_interactor.Start()
 
 if __name__ == "__main__":
+    # file path for the volume data
     file_path = "Data/Isabel_3D.vti"
     render_scene(file_path)
