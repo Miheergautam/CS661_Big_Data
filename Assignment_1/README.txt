@@ -1,40 +1,78 @@
-Steps to Run Isocontour and Volume Rendering Programs
+CS661 Assignment 1 - Isocontour and Volume Visualization
+=====================================================
 
-PREREQUISITES
-Ensure you have Python installed with the following libraries:
-- vtk
+This repository contains implementations for 2D isocontour extraction and 3D volume rendering using VTK.
 
-Install VTK using:
-pip install vtk
+Prerequisites
+------------
+- Python 3.x
+- VTK library
 
-DIRECTORY STRUCTURE
+Installation
+------------
+Install the required VTK library using pip:
+    pip install vtk
+
+Directory Structure
+-----------------
 .
-├── isocontour.py
-├── volume_rendering.py
-├── Data
-│   └── Isabel_2D.vti (for isocontour)
-│   └── Isabel_3D.vti (for volume rendering)
-└── contour_output.vtp (generated automatically)
+├── isocontour.py          # 2D isocontour extraction implementation
+├── volume_render.py       # 3D volume rendering implementation
+├── Data/
+│   ├── Isabel_2D.vti     # 2D dataset for isocontour
+│   └── Isabel_3D.vti     # 3D dataset for volume rendering
+├── contour_output.vtp     # Generated isocontour output
+└── README.txt            
 
-RUNNING THE PROGRAMS
+Running the Programs
+------------------
 
-1. Run isocontour.py
-This script generates an isocontour from the 2D dataset and saves the result in the output_isocontours directory.
+1. Isocontour Extraction (Question 1)
+------------------------------------
+Command:
+    python isocontour.py
 
-Steps:
-python isocontour.py
+Usage:
+- When prompted, enter an isovalue between -1438 and 630
+- The program will:
+  * Generate the isocontour
+  * Display the visualization
+  * Save the result as 'contour_output.vtp'
+- The visualization window can be interacted with using:
+  * Left mouse button: Rotate
+  * Mouse wheel: Scroll to control zoom
 
-- Enter the requested iso value when prompted.
-- The isocontour will be displayed and saved as a .vtp file in the  same directory.
 
-Output File Location:
-contour_output.vtp
+2. Volume Rendering (Question 2)
+-------------------------------
+Command:
+    python volume_render.py
 
-2. Run vtk_volume_rendering.py
-This script renders the 3D volume from the dataset.
+Usage:
+- When prompted, enter:
+  * 'y' to enable Phong shading
+  * 'n' to disable Phong shading
+- The program will:
+  * Apply the specified transfer functions
+  * Display the volume rendering
+- The visualization window can be interacted with using:
+  * Left mouse button: Rotate
+  * Mouse wheel: Scroll to control zoom
 
-Steps:
-python volume_rendering.py
+Output Files
+-----------
+- Isocontour output: 'contour_output.vtp'
+  * Can be visualized using ParaView
+  * Located in the same directory as the scripts
 
-- Enter 'y' or 'n' when prompted to enable or disable Phong shading.
-- The volume rendering window will open for visualization.
+Troubleshooting
+--------------
+1. If you encounter "File not found" errors:
+   - Ensure the Data directory contains both .vti files
+   - Check that you're running the scripts from the correct directory
+
+2. If visualization doesn't appear:
+   - Verify VTK installation: python -c "import vtk; print(vtk.vtkVersion().GetVTKVersion())"
+
+3. If performance is slow:
+   - For volume rendering, try running without Phong shading
