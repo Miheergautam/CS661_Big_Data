@@ -14,7 +14,7 @@ DIRECTORY STRUCTURE
 ├── Data
 │   └── Isabel_2D.vti (for isocontour)
 │   └── Isabel_3D.vti (for volume rendering)
-└── output_isocontours (generated automatically)
+└── contour_output.vtp (generated automatically)
 
 RUNNING THE PROGRAMS
 
@@ -25,12 +25,12 @@ Steps:
 python isocontour.py
 
 - Enter the requested iso value when prompted.
-- The isocontour will be displayed and saved as a .vtp file in the output_isocontours directory.
+- The isocontour will be displayed and saved as a .vtp file in the  same directory.
 
 Output File Location:
-output_isocontours/isocontour_<iso_value>.vtp
+contour_output.vtp
 
-2. Run volume_rendering.py
+2. Run vtk_volume_rendering.py
 This script renders the 3D volume from the dataset.
 
 Steps:
