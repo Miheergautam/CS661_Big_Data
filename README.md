@@ -25,6 +25,11 @@ This repository contains assignments and projects completed as part of the CS661
 
 More assignments will be added as the course progresses.
 
+#### Assignment 2: Plotly and Jupyter Widgets Visualization
+
+- Plotly Visualization
+- Jupyter Widgets
+
 ## Setup and Dependencies
 
 Each assignment directory contains its own README with specific setup instructions and dependencies.
