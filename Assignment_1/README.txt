@@ -3,6 +3,14 @@ CS661 Assignment 1 - Isocontour and Volume Visualization
 
 This repository contains implementations for 2D isocontour extraction and 3D volume rendering using VTK.
 
+
+Group Members
+------------
+
+Devashish Nagpal - EXY24018
+Miheer Gautam - EXY24022
+
+
 Prerequisites
 ------------
 - Python 3.x
