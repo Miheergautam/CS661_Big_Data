@@ -4,7 +4,7 @@
 
 **Course:** CS661 Big Data Visual Analytics  
 **Instructor:** Prof. Soumya Dutta  
-**Term:** Spring 2024  
+**Term:** Spring 2025  
 **Institution:** Indian Institute of Technology, Kanpur  
 
 ## Team Members
