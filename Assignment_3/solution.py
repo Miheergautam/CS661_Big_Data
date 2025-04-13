@@ -1,27 +1,38 @@
 import vtk
 from vtk.util.numpy_support import vtk_to_numpy
 
+
 def get_vector_at_position(probe_filter, position):
     """Interpolate the vector at the given 3D position using vtkProbeFilter."""
+    
+    # Create a vtkPoints object to hold the position
     points = vtk.vtkPoints()
     points.InsertNextPoint(position)
 
+    # Create a vtkPolyData object to hold the points
     sample = vtk.vtkPolyData()
     sample.SetPoints(points)
 
+    # Set the input for the probe filter
     probe_filter.SetInputData(sample)
     probe_filter.Update()
 
+    # Get the output of the probe filter
     result = probe_filter.GetOutput()
     vectors = result.GetPointData().GetVectors()
+
+    # Check if the vectors are valid and return the first vector
     return vtk_to_numpy(vectors)[0] if vectors and vectors.GetNumberOfTuples() > 0 else None
 
 def rk4_step(probe_filter, current_pos, step_size):
     """Perform a single Runge-Kutta 4th order integration step."""
+
+    # Get vector at the current position
     v1 = get_vector_at_position(probe_filter, current_pos)
     if v1 is None:
         return None
 
+    # Compute intermediate positions and vectors
     p2 = [p + 0.5 * step_size * v for p, v in zip(current_pos, v1)]
     v2 = get_vector_at_position(probe_filter, p2)
     if v2 is None:
@@ -37,6 +48,7 @@ def rk4_step(probe_filter, current_pos, step_size):
     if v4 is None:
         return None
 
+    # Compute the next position using RK4 formula
     next_pos = [
         p + (step_size / 6.0) * (v1[i] + 2 * v2[i] + 2 * v3[i] + v4[i])
         for i, p in enumerate(current_pos)
@@ -49,17 +61,17 @@ def is_inside_bounds(pos, bounds):
 
 def trace_streamline(seed, probe_filter, bounds, step=0.05, max_steps=1000):
     """Trace streamline using RK4 from a seed point in both directions."""
-    streamline = [seed[:]]  # Copy of seed
+    streamline = [seed[:]]  # Initialize streamline with the seed point
 
-    # Forward direction
+    # Forward direction tracing
     pos = seed[:]
     for _ in range(max_steps):
         pos = rk4_step(probe_filter, pos, step)
-        if pos is None or not is_inside_bounds(pos, bounds):
+        if pos is None or not is_inside_bounds(pos, bounds): 
             break
         streamline.append(pos)
 
-    # Backward direction
+    # Backward direction tracing
     pos = seed[:]
     backward = []
     for _ in range(max_steps):
@@ -68,7 +80,8 @@ def trace_streamline(seed, probe_filter, bounds, step=0.05, max_steps=1000):
             break
         backward.insert(0, pos)
 
-    return backward + streamline  # Full streamline
+    # Combine forward and backward streamlines
+    return backward + streamline  
 
 def request_seed_from_user():
     """Prompt user to input seed coordinates."""
@@ -83,6 +96,7 @@ def save_streamline_to_vtp(streamline_points, filename="streamline_output.vtp"):
     points = vtk.vtkPoints()
     lines = vtk.vtkCellArray()
 
+    # Add points and lines to the polydata
     for i, pt in enumerate(streamline_points):
         points.InsertNextPoint(pt)
         if i > 0:
@@ -91,10 +105,12 @@ def save_streamline_to_vtp(streamline_points, filename="streamline_output.vtp"):
             line.GetPointIds().SetId(1, i)
             lines.InsertNextCell(line)
 
+    # Create a vtkPolyData object to hold the points and lines
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
     polydata.SetLines(lines)
 
+    # Write the polydata to a .vtp file
     writer = vtk.vtkXMLPolyDataWriter()
     writer.SetFileName(filename)
     writer.SetInputData(polydata)
@@ -112,15 +128,16 @@ def main():
     probe = vtk.vtkProbeFilter()
     probe.SetSourceData(vector_data)
 
-    # Get bounds and seed
+    # Get dataset bounds and seed point from the user
     bounds = vector_data.GetBounds()
     seed_point = request_seed_from_user()
 
-    # Generate streamline
+    # Generate the streamline
     streamline = trace_streamline(seed_point, probe, bounds)
 
-    # Save to file
+    # Save the streamline to a .vtp file
     save_streamline_to_vtp(streamline, "rk4_streamline.vtp")
 
+# Entry point of the script
 if __name__ == "__main__":
     main()
