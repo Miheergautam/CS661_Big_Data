@@ -85,7 +85,7 @@ def trace_streamline(seed, probe_filter, bounds, step=0.05, max_steps=1000):
 
 def request_seed_from_user():
     """Prompt user to input seed coordinates."""
-    print("Enter the 3D seed location:")
+    print("Enter the 3D seed location:\n")
     x = float(input("x: "))
     y = float(input("y: "))
     z = float(input("z: "))
@@ -118,6 +118,8 @@ def save_streamline_to_vtp(streamline_points, filename="streamline_output.vtp"):
     print(f"Streamline saved to '{filename}'.")
 
 def main():
+    print("Streamline Tracing using RK4\n")
+    print("==================================== \n")
     # Load the tornado dataset
     reader = vtk.vtkXMLImageDataReader()
     reader.SetFileName("tornado3d_vector.vti")
